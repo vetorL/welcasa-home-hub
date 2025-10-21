@@ -1,73 +1,95 @@
-# Welcome to your Lovable project
+# Welcasa - Sistema de Gestão de Imóveis
 
-## Project info
+Sistema frontend para gerenciamento de imóveis da Welhome.
 
-**URL**: https://lovable.dev/projects/2439fecf-96e8-4bd9-9a85-f7ca2bb36011
+## 🚀 Como Rodar o Projeto
 
-## How can I edit this code?
+### Pré-requisitos
 
-There are several ways of editing your application.
+- Node.js (versão 16 ou superior)
+- npm ou yarn
+- Backend Flask rodando na porta 5000
 
-**Use Lovable**
+### Instalação
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2439fecf-96e8-4bd9-9a85-f7ca2bb36011) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+1. Clone o repositório:
+```bash
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. Instale as dependências:
+```bash
+npm install
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Inicie o servidor de desenvolvimento:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Acesse a aplicação em: `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔌 Integração com Backend
 
-**Use GitHub Codespaces**
+O frontend espera que o backend Flask esteja rodando em `http://localhost:5000` com os seguintes endpoints:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- `GET /properties` - Lista todos os imóveis
+- `POST /properties` - Cria um novo imóvel
+- `PUT /properties/:id` - Atualiza um imóvel
+- `DELETE /properties/:id` - Remove um imóvel
 
-## What technologies are used for this project?
+### Estrutura de Dados
 
-This project is built with:
+```json
+{
+  "id": 1,
+  "title": "Apartamento em Copacabana",
+  "address": "Av. Atlântica, 1500 - Rio de Janeiro",
+  "status": "active"
+}
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🎨 Funcionalidades
 
-## How can I deploy this project?
+- ✅ Listagem de imóveis em tabela
+- ✅ Adicionar novos imóveis via modal
+- ✅ Editar imóveis existentes
+- ✅ Remover imóveis
+- ✅ Indicador visual de status (ativo/inativo)
+- ✅ Validação de formulários
+- ✅ Feedback visual com toasts
 
-Simply open [Lovable](https://lovable.dev/projects/2439fecf-96e8-4bd9-9a85-f7ca2bb36011) and click on Share -> Publish.
+## 🛠️ Tecnologias
 
-## Can I connect a custom domain to my Lovable project?
+- **React** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool
+- **Tailwind CSS** - Estilização
+- **shadcn/ui** - Componentes UI
+- **React Query** - Gerenciamento de estado servidor
+- **React Hook Form** - Gerenciamento de formulários
+- **Zod** - Validação de schemas
 
-Yes, you can!
+## 📝 Estrutura do Projeto
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```
+src/
+├── components/
+│   ├── ui/              # Componentes shadcn/ui
+│   ├── PropertyTable.tsx    # Tabela de imóveis
+│   └── PropertyModal.tsx    # Modal de cadastro/edição
+├── services/
+│   └── propertyService.ts   # Serviço de API
+├── pages/
+│   └── Index.tsx           # Página principal
+└── hooks/
+    └── use-toast.ts        # Hook de notificações
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🎯 Próximos Passos
+
+- Adicionar paginação na tabela
+- Implementar filtros e busca
+- Adicionar mais campos ao cadastro de imóveis
+- Melhorar responsividade mobile
