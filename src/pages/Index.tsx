@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Building2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropertyTable, Property } from "@/components/PropertyTable";
 import { PropertyModal } from "@/components/PropertyModal";
 import { propertyService } from "@/services/propertyService";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Index = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -90,8 +102,15 @@ const Index = () => {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm("Tem certeza que deseja remover este imóvel?")) {
-      deleteMutation.mutate(id);
+    setPropertyToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (propertyToDelete !== null) {
+      deleteMutation.mutate(propertyToDelete);
+      setDeleteDialogOpen(false);
+      setPropertyToDelete(null);
     }
   };
 
@@ -104,15 +123,18 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Building2 className="h-8 w-8 text-accent" />
-              <div>
-                <h1 className="text-3xl font-extrabold text-primary">Welcasa</h1>
-                <p className="text-sm text-muted-foreground">Gestão de Imóveis Welhome</p>
-              </div>
-            </div>
+            <img 
+              src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-1920w.png"
+              alt="Welhome"
+              className="h-12 hidden md:block"
+            />
+            <img 
+              src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-d996cd7d-260w.png"
+              alt="Welhome"
+              className="h-10 md:hidden"
+            />
             <Button
               onClick={() => setModalOpen(true)}
               className="bg-accent hover:bg-accent/90 gap-2"
@@ -154,6 +176,27 @@ const Index = () => {
         onSubmit={handleSubmit}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja remover este imóvel? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
