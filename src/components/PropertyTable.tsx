@@ -1,4 +1,4 @@
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -21,17 +21,62 @@ interface PropertyTableProps {
   properties: Property[];
   onEdit: (property: Property) => void;
   onDelete: (id: number) => void;
+  onSort: (field: keyof Property) => void;
+  sortField: keyof Property | null;
+  sortDirection: "asc" | "desc";
 }
 
-export const PropertyTable = ({ properties, onEdit, onDelete }: PropertyTableProps) => {
+export const PropertyTable = ({
+  properties,
+  onEdit,
+  onDelete,
+  onSort,
+  sortField,
+  sortDirection,
+}: PropertyTableProps) => {
+  const getSortIcon = (field: keyof Property) => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />;
+    return (
+      <ArrowUpDown
+        className={`h-4 w-4 ml-1 transition-transform ${
+          sortDirection === "desc" ? "rotate-180" : ""
+        }`}
+      />
+    );
+  };
+
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow className="bg-secondary/30">
-            <TableHead className="font-bold">Título</TableHead>
-            <TableHead className="font-bold">Endereço</TableHead>
-            <TableHead className="font-bold">Status</TableHead>
+            <TableHead className="font-bold">
+              <button
+                onClick={() => onSort("title")}
+                className="flex items-center hover:text-foreground transition-colors"
+              >
+                Título
+                {getSortIcon("title")}
+              </button>
+            </TableHead>
+            <TableHead className="font-bold">
+              <button
+                onClick={() => onSort("address")}
+                className="flex items-center hover:text-foreground transition-colors"
+              >
+                Endereço
+                {getSortIcon("address")}
+              </button>
+            </TableHead>
+            <TableHead className="font-bold">
+              <button
+                onClick={() => onSort("status")}
+                className="flex items-center hover:text-foreground transition-colors"
+              >
+                Status
+                {getSortIcon("status")}
+              </button>
+            </TableHead>
             <TableHead className="text-right font-bold">Ações</TableHead>
           </TableRow>
         </TableHeader>

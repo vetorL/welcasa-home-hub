@@ -82,7 +82,7 @@ export const PropertyModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-w-[95vw] sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {property ? "Editar Imóvel" : "Novo Imóvel"}

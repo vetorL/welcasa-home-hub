@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropertyTable, Property } from "@/components/PropertyTable";
 import { PropertyModal } from "@/components/PropertyModal";
 import { propertyService } from "@/services/propertyService";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +23,9 @@ const Index = () => {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState<keyof Property | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -119,25 +123,60 @@ const Index = () => {
     setEditingProperty(null);
   };
 
+  const handleSort = (field: keyof Property) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const filteredAndSortedProperties = useMemo(() => {
+    let filtered = properties.filter(
+      (property) =>
+        property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.status.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (sortField) {
+      filtered = [...filtered].sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          return sortDirection === "asc"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+        
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [properties, searchTerm, sortField, sortDirection]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <img 
               src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-1920w.png"
               alt="Welhome"
-              className="h-12 hidden md:block"
+              className="h-10 hidden md:block"
             />
             <img 
               src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-d996cd7d-260w.png"
               alt="Welhome"
-              className="h-10 md:hidden"
+              className="h-8 md:hidden"
             />
             <Button
               onClick={() => setModalOpen(true)}
-              className="bg-accent hover:bg-accent/90 gap-2"
+              className="bg-accent hover:bg-accent/90 gap-2 w-full md:w-auto"
             >
               <Plus className="h-5 w-5" />
               Novo Imóvel
@@ -155,15 +194,30 @@ const Index = () => {
           </p>
         </div>
 
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por título, endereço ou status..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">Carregando imóveis...</p>
           </div>
         ) : (
           <PropertyTable
-            properties={properties}
+            properties={filteredAndSortedProperties}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onSort={handleSort}
+            sortField={sortField}
+            sortDirection={sortDirection}
           />
         )}
       </main>
@@ -179,7 +233,7 @@ const Index = () => {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-[95vw] sm:max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>

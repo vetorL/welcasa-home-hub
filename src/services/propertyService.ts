@@ -1,6 +1,6 @@
 import { Property } from "@/components/PropertyTable";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "http://localhost:8000";
 
 export const propertyService = {
   async getAll(): Promise<Property[]> {
