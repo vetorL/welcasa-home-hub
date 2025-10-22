@@ -136,8 +136,7 @@ const Index = () => {
     let filtered = properties.filter(
       (property) =>
         property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.status.toLowerCase().includes(searchTerm.toLowerCase())
+        property.address.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (sortField) {
@@ -161,9 +160,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card">
+      <header className="bg-card" style={{ boxShadow: 'rgba(0, 0, 0, 0.1) 0px 3px 11px 0px' }}>
         <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4">
             <img 
               src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-1920w.png"
               alt="Welhome"
@@ -172,11 +171,11 @@ const Index = () => {
             <img 
               src="https://le-de.cdn-website.com/47964109303643efbdc0c53fda28e1cb/dms3rep/multi/opt/Logo-Tagline-a3d2eb0c-d996cd7d-260w.png"
               alt="Welhome"
-              className="h-8 md:hidden"
+              className="h-8 md:hidden mx-auto"
             />
             <Button
               onClick={() => setModalOpen(true)}
-              className="bg-accent hover:bg-accent/90 gap-2 w-full md:w-auto"
+              className="bg-accent hover:bg-accent/90 gap-2 hidden md:flex"
             >
               <Plus className="h-5 w-5" />
               Novo Imóvel
@@ -198,7 +197,7 @@ const Index = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Buscar por título, endereço ou status..."
+              placeholder="Buscar por título ou endereço..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -251,6 +250,18 @@ const Index = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Mobile Sticky Button */}
+      <div className="md:hidden fixed bottom-6 left-0 right-0 px-4 z-50">
+        <Button
+          onClick={() => setModalOpen(true)}
+          className="bg-accent hover:bg-accent/90 gap-2 w-full shadow-lg"
+          size="lg"
+        >
+          <Plus className="h-5 w-5" />
+          Novo Imóvel
+        </Button>
+      </div>
     </div>
   );
 };
